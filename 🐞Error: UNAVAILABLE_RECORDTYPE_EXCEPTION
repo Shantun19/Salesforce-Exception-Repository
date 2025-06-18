@@ -1,0 +1,24 @@
+📌 Description
+===============
+When attempting to convert a Lead in Salesforce, the following error is thrown:
+
+
+Error: ConvertLead failed. First exception on row 0; first error: UNAVAILABLE_RECORDTYPE_EXCEPTION, Unable to find default record type: []
+
+❓ Why This Error Occurred
+==========================
+This error indicates that Salesforce couldn't find a default Record Type for the object being created during Lead conversion — typically the Account, Contact, or Opportunity.
+
+The cause is usually one of the following:
+
+The user performing the conversion does not have access to any Record Types for one or more of the objects.
+A default Record Type is not set for the user’s profile for that object.
+Record Types were deleted or changed, and default associations were broken.
+The Lead conversion is being done via code or automation (like Apex) without explicitly specifying a Record Type.
+
+✅ Solution
+============
+Go to Setup → Profiles → [User’s Profile] → Object Settings → [Object like Account, Contact, Opportunity] → Record Types.
+Ensure at least one Record Type is assigned and marked as default.
+
+
