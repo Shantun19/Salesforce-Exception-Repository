@@ -1,0 +1,43 @@
+❌ Problem in Your Flow
+You have this trigger configuration:
+  ✅ Trigger the Flow When: A record is created or updated
+  ❌ Formula in Entry Conditions: Using ISCHANGED({!$Record.Trigger_email_after__c})
+
+Error Message:
+"The ISCHANGED function isn’t valid because 'When to Run the Flow for Updated Records' in the Start element changed."
+
+This means:
+You can’t use ISCHANGED() in entry conditions if your Flow is set to run on record creation too. ISCHANGED() only works when:
+The Flow is set to run only when a record is updated, AND
+The "When to Run the Flow for Updated Records" is set to:
+✔️ "Only when a record is updated to meet the condition requirements"
+-----------------------------------------------------------------------------------
+✅ How to Fix It
+🛠 Option 1 (Recommended): Remove ISCHANGED() from Start — Use a Decision Element
+Since you want the flow to run on create and update, do this instead:
+  1.Remove ISCHANGED({!$Record.Trigger_email_after__c}) from the start condition.
+  2.Use only these in Start formula:
+      ISPICKVAL({!$Record.Work_Order__r.Source__c}, 'Online') &&
+      ISPICKVAL({!$Record.Type__c}, 'Certificate')
+  3.After the Start, add a Decision Element:
+    Label: “Trigger_Email_After Changed?”
+    Condition:
+        {!$Record.Trigger_email_after__c} != {!$Record__Prior.Trigger_email_after__c}
+In the “Yes” outcome path, continue with your logic.
+This checks if the field actually changed and prevents false triggers.
+-----------------------------------------------------------------------------------
+🛠 Option 2: Change Trigger Type to Only Update
+  If you're sure the Flow only needs to run on updates, and not on record creation:
+    1.Change the Start element to:
+        ✅ Trigger the Flow When: A record is updated
+        ✅ When to Run the Flow: Only when a record is updated to meet the condition requirements
+    2.Then your existing formula with ISCHANGED() will work:
+        ISCHANGED({!$Record.Trigger_email_after__c}) &&
+        ISPICKVAL({!$Record.Work_Order__r.Source__c}, 'Online') &&
+        ISPICKVAL({!$Record.Type__c}, 'Certificate')
+
+-----------------------------------------------------------------------------------
+| Option                       | Use When                                        | What You Do                                                                            |
+| ---------------------------- | ----------------------------------------------- | -------------------------------------------------------------------------------------- |
+| ✅ **Option 1** (Recommended) | You want the flow to run on **create + update** | Remove `ISCHANGED()` from start, use `!=` check in a **Decision Element**              |
+| ✅ **Option 2**               | Flow only runs on **update**, not on creation   | Change trigger to "record is updated", then you can use `ISCHANGED()` in start formula |
