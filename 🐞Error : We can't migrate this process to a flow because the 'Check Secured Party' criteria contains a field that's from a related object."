@@ -1,0 +1,42 @@
+🐞Error : We can't migrate this process to a flow because the 'Check Secured Party' criteria contains a field that's from a related object."
+
+❌ Error During Migration
+"We can't migrate this process to a flow because the 'Check Secured Party' criteria contains a field that's from a related object."
+
+🧠 Why This Happens
+Salesforce’s “Migrate to Flow” tool has a limitation:
+  It cannot migrate Process Builder criteria that reference fields from related objects (like Assignor_ID__r.Name).
+  In your Process Builder:
+    Your Check Secured Party criteria uses something like:
+      Assignor_ID__r.Name (i.e., a cross-object reference)
+This kind of reference works fine in Process Builder, but the migration tool doesn’t support it.
+🔍 Example of Unsupported Field
+If you have a field update or condition like this:
+  [UCC_Entity_Info__c ].Assignor_ID__r.Name
+  ✅ Allowed in PB
+  ❌ Not allowed in Flow migration tool
+
+----------------------------------------------------
+✅ What You Can Do
+✔ Option 1: Manually Rebuild the Flow
+Since the migration tool won’t handle it, you’ll need to rebuild this Process manually in Flow:
+1.Go to Setup → Flows → New Flow
+2.Create a Record-Triggered Flow on UCC_Entity_Info__c (or your object)
+3.Recreate the Check Secured Party logic using:
+4.Then add Assignment elements to update:
+  Secured_Party_ID__c
+  Assignor_ID__c
+  Filing_ID__c
+  Assignor_ID__r.Name (indirectly via a Get + assignment)
+
+ ✔ Option 2: Remove Related Field & Migrate, Then Add It Back
+If you want to use the migration tool partially:
+  1.Temporarily remove the related-object reference (e.g., Assignor_ID__r.Name) from the PB.
+  2.Migrate the Process using the tool.
+  3.Then go to the new Flow and manually add that field reference using:
+    A Get Records step to fetch Assignor_ID__r
+    And then assign Name to the needed variable or field.
+
+| Cause                                                                             | Fix                                                                                      |
+| --------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------- |
+| You’re using a related-object field like `Assignor_ID__r.Name` in the PB criteria | Migrate manually, or remove that field temporarily and re-add it in Flow after migration |
