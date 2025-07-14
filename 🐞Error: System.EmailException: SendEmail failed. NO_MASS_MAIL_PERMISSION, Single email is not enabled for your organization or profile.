@@ -1,0 +1,23 @@
+❌ Error Message Summary:
+System.EmailException: SendEmail failed.
+NO_MASS_MAIL_PERMISSION, Single email is not enabled for your organization or profile.
+
+🧠 What it Means
+Salesforce is trying to send an email from a Flow or Process Builder (Business Registration Email Sent on Business Filing Status), but it's not allowed because:
+  1.Your Profile or Org Settings don’t have permission to send emails.
+  2.Salesforce has a setting called "Single email" which is disabled for your profile or org.
+  3.This restriction prevents both manual and automated emails.
+
+🛠️ How to Fix It:
+Ask your Salesforce Admin to do the following:
+
+✅ Step 1: Enable Email Deliverability
+  Go to Setup → Email → Deliverability
+  Set Access Level to: All email
+✅ Step 2: Check Profile Email Permissions
+  Go to your User's Profile
+  Under Administrative Permissions, make sure:
+    ✅ Send Email is checked
+    ✅ Mass Email (optional but useful) is enabled
+✅ Step 3: Confirm Email is Enabled in Org
+  Ensure that Email Sending is not disabled in any org-wide settings or sandboxes.
