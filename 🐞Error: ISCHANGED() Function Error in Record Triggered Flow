@@ -41,3 +41,11 @@ This checks if the field actually changed and prevents false triggers.
 | ---------------------------- | ----------------------------------------------- | -------------------------------------------------------------------------------------- |
 | ✅ **Option 1** (Recommended) | You want the flow to run on **create + update** | Remove `ISCHANGED()` from start, use `!=` check in a **Decision Element**              |
 | ✅ **Option 2**               | Flow only runs on **update**, not on creation   | Change trigger to "record is updated", then you can use `ISCHANGED()` in start formula |
+
+
+==========================
+ ✅ ✅ ✅ ✅ preferred solutuion 
+
+when the flow is triggered 
+choose this option : Every time a record is updated and meets the condition requirements
+
